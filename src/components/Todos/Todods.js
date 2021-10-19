@@ -1,6 +1,12 @@
 import { useFetch } from '../../hooks/useFetch';
 import { useState, useMemo } from 'react';
 
+/**
+ * Filter data with query and update in state
+ * @param { } query
+ * @param {*} data
+ */
+
 const handledFiltedTodos = (query, data) => {
   if (!query) return data;
 
@@ -15,15 +21,25 @@ const handledFiltedTodos = (query, data) => {
 const Todos = ({ query }) => {
   const { data, loading, error } = useFetch();
   const [filterData, setFilterData] = useState([]);
+  const [sortingDirection, setSortingDirection] = useState('DEC');
 
   useMemo(() => {
     setFilterData(handledFiltedTodos(query, data));
   }, [query, data]);
 
+  /**
+   *  Sorted List with descending order
+   */
+
   const handleTodoSort = () => {
-    const newSortedData = data
-      .slice(0)
-      .sort((a, b) => b.completed - a.completed);
+    let newSortedData;
+    if (sortingDirection === 'DEC') {
+      setSortingDirection('ACE');
+      newSortedData = data.slice(0).sort((a, b) => b.completed - a.completed);
+    } else {
+      setSortingDirection('DEC');
+      newSortedData = data.slice(0).sort((a, b) => a.completed - b.completed);
+    }
 
     setFilterData(newSortedData);
   };
